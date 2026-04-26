@@ -12,6 +12,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from pywebpush import webpush, WebPushException
 
+
 load_dotenv()
 
 app = Flask(__name__)
