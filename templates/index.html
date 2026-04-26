@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>📰 News Feed & Notification System</title>
+<link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="header">
+  <div class="header-left">
+    <span class="header-icon">📰</span>
+    <span class="header-title">News Feed &amp; Notification System</span>
+  </div>
+  <div class="header-right">
+    <span class="mongo-badge">🍃 MongoDB Connected</span>
+    <span class="stats-label" id="statsLabel">Subscribers: 0 | Published: 0</span>
+  </div>
+</div>
+
+<!-- ═══════════════ PATTERN BANNER ═══════════════ -->
+<div class="banner">
+  <span class="badge factory">🏭 Factory Pattern</span>
+  <span class="badge observer">👁 Observer Pattern</span>
+  <span class="badge mvc">🎮 MVC Pattern</span>
+  <span class="badge mongo">🍃 MongoDB Storage</span>
+</div>
+
+<!-- ═══════════════ TABS ═══════════════ -->
+<div class="tabs-container">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('publish',this)">📤 Publish News</button>
+    <button class="tab-btn" onclick="switchTab('users',this)">👥 Users &amp; Subscriptions</button>
+    <button class="tab-btn" onclick="switchTab('feed',this)">📬 User Feeds</button>
+    <button class="tab-btn" onclick="switchTab('patterns',this)">📚 Pattern Reference</button>
+  </div>
+
+  <!-- ─── TAB 1: PUBLISH NEWS ─── -->
+  <div id="tab-publish" class="tab-content active">
+    <h2 class="section-title">Publish a News Item</h2>
+    <div class="hint-box factory-hint">
+      🏭 <strong>Factory Pattern:</strong> Select a type and the Factory creates the right object automatically.
+      &nbsp;&nbsp;🍃 News is saved to MongoDB.
+    </div>
+
+    <div class="form-grid">
+      <label>Notification Type:</label>
+      <select id="notifType">
+        <option>Email</option>
+        <option>SMS</option>
+        <option>Push</option>
+      </select>
+
+      <label>News Category:</label>
+      <select id="newsCategory">
+        <option>Technology</option>
+        <option>Sports</option>
+        <option>Politics</option>
+        <option>Entertainment</option>
+        <option>Science</option>
+      </select>
+
+      <label>Headline / Message:</label>
+      <textarea id="newsMessage" rows="4" placeholder="Enter headline or message..."></textarea>
+
+      <label></label>
+      <button class="btn-primary" onclick="publishNews()">🚀 Publish News</button>
+
+      <label class="top-align">Published Items Log:</label>
+      <div id="publishLog" class="log-box"></div>
+    </div>
+  </div>
+
+  <!-- ─── TAB 2: USERS & SUBSCRIPTIONS ─── -->
+  <div id="tab-users" class="tab-content">
+    <h2 class="section-title">Manage Users &amp; Subscriptions</h2>
+    <div class="hint-box observer-hint">
+      👁 <strong>Observer Pattern:</strong> Users subscribe/unsubscribe to categories.
+      Publisher notifies all relevant subscribers automatically.
+      &nbsp;&nbsp;🍃 Users &amp; subscriptions saved to MongoDB.
+    </div>
+
+    <div class="form-grid">
+      <label>New User Name:</label>
+      <div class="row-group">
+        <input type="text" id="newUserName" placeholder="Enter name..." />
+        <button class="btn-primary" onclick="addUser()">➕ Add User</button>
+      </div>
+
+      <label>Select User:</label>
+      <select id="userSelect"></select>
+
+      <label>Category:</label>
+      <select id="subCategory">
+        <option>ALL</option>
+        <option>Technology</option>
+        <option>Sports</option>
+        <option>Politics</option>
+        <option>Entertainment</option>
+        <option>Science</option>
+      </select>
+
+      <label></label>
+      <div class="row-group">
+        <button class="btn-primary" onclick="subscribeUser()">✅ Subscribe</button>
+        <button class="btn-danger" onclick="unsubscribeUser()">❌ Unsubscribe</button>
+      </div>
+
+      <label class="top-align">Active Users:</label>
+      <div id="userList" class="log-box"></div>
+    </div>
+  </div>
+
+  <!-- ─── TAB 3: USER FEEDS ─── -->
+  <div id="tab-feed" class="tab-content">
+    <h2 class="section-title">User Notification Feed</h2>
+    <div class="hint-box mvc-hint">
+      🎮 <strong>MVC Pattern:</strong> This View displays data from the Model.
+      &nbsp;&nbsp;🍃 Feeds are restored from MongoDB on every app launch.
+    </div>
+
+    <div class="feed-controls">
+      <label>View feed for:</label>
+      <select id="feedUserSelect"></select>
+      <button class="btn-primary" onclick="viewFeed()">🔍 View Feed</button>
+      <button class="btn-secondary" onclick="enablePush()">🔔 Enable Push Notifications</button>
+    </div>
+
+    <div id="feedDisplay" class="log-box feed-log">
+      Select a user and click "View Feed" to see their notifications.
+    </div>
+  </div>
+
+  <!-- ─── TAB 4: PATTERN REFERENCE ─── -->
+  <div id="tab-patterns" class="tab-content">
+    <div class="pattern-card">
+      <h3 class="pattern-title factory-color">🏭 Factory Pattern</h3>
+      <p class="pattern-desc">Creates objects without exposing instantiation logic to the client.</p>
+      <p class="pattern-scenario">In this app: NotificationFactory.create('Email', ...) returns an EmailNotification object. To add a new type, only edit the factory.</p>
+      <div class="code-block">
+        <code>class NotificationFactory:</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;_creators = {</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Email': EmailNotification,</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'SMS':&nbsp;&nbsp; SMSNotification,</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Push':&nbsp; PushNotification,</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;}</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;@staticmethod</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;def create(type, message, category):</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return _creators[type](message, category)</code>
+      </div>
+    </div>
+
+    <div class="pattern-card">
+      <h3 class="pattern-title observer-color">👁 Observer Pattern</h3>
+      <p class="pattern-desc">Defines a one-to-many dependency so that when one object changes state, all its dependents are notified automatically.</p>
+      <p class="pattern-scenario">In this app: NewsPublisher notifies all subscribed UserSubscribers when news is published. Users can subscribe/unsubscribe freely.</p>
+      <div class="code-block">
+        <code>class NewsPublisher:&nbsp;&nbsp;&nbsp;# Subject</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;def subscribe(self, observer): ...</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;def publish(self, notification):</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for obs in self._subscribers:</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obs.update(notification)</code>
+        <code>&nbsp;</code>
+        <code>class UserSubscriber(Observer):&nbsp;&nbsp;# Observer</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;def update(self, notification):</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.received.append(notification)</code>
+      </div>
+    </div>
+
+    <div class="pattern-card">
+      <h3 class="pattern-title mvc-color">🎮 MVC Pattern</h3>
+      <p class="pattern-desc">Separates an application into three components: Model (data), View (UI), Controller (logic).</p>
+      <p class="pattern-scenario">Model → NewsFeedModel &nbsp;|&nbsp; View → NewsFeedView &nbsp;|&nbsp; Controller → NewsFeedController</p>
+      <div class="code-block">
+        <code># Model — pure data, no UI</code>
+        <code>class NewsFeedModel: ...</code>
+        <code>&nbsp;</code>
+        <code># View — pure UI, no logic</code>
+        <code>class NewsFeedView: ...</code>
+        <code>&nbsp;</code>
+        <code># Controller — connects both</code>
+        <code>class NewsFeedController:</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;def __init__(self, model, view):</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.model = model</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.view&nbsp; = view</code>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self._bind_events()</code>
+      </div>
+    </div>
+
+    <div class="pattern-card">
+      <h3 class="pattern-title mongo-color">🍃 MongoDB Integration</h3>
+      <p class="pattern-desc">Persistent storage for users, subscriptions, news items, and notifications. Data survives app restarts — re-hydrated on every launch.</p>
+      <p class="pattern-scenario">Collections: users &nbsp;|&nbsp; news_items &nbsp;|&nbsp; notifications<br/>Only NewsFeedModel was changed — View and Controller: 0 modifications.</p>
+      <div class="code-block">
+        <code>self._client&nbsp;&nbsp;&nbsp;&nbsp;= MongoClient('mongodb+srv://...')</code>
+        <code>self._db&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= self._client['news_feed_db']</code>
+        <code>self._users_col = self._db['users']</code>
+        <code>self._news_col&nbsp; = self._db['news_items']</code>
+        <code>self._notif_col = self._db['notifications']</code>
+        <code>&nbsp;</code>
+        <code># On startup — restore everything from DB:</code>
+        <code>self._load_users_from_db()</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div id="toast" class="toast"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
